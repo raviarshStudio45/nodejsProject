@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Profile = () => {
   const navigate = useNavigate();
+
+  const getData = async () => {
+    const token = localStorage.getItem("Token");
+    console.log("token", token);
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}auth/user-profile`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   const handleLogout = () => {
     localStorage.removeItem("User");
     localStorage.clear();

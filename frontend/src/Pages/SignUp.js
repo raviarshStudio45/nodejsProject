@@ -7,6 +7,7 @@ const SignUp = () => {
   const [fname, setfname] = useState("");
   const [lname, setlname] = useState("");
   const [email, setemail] = useState("");
+  const [dob, setdob] = useState("");
   const [phone, setphone] = useState("");
   const [password, setpassword] = useState("");
   const handleSubmit = async () => {
@@ -16,6 +17,7 @@ const SignUp = () => {
         data.append("firstName", fname);
         data.append("lastName", lname);
         data.append("email", email);
+        data.append("dob", dob);
         data.append("phoneNumber", phone);
         data.append("password", password);
 
@@ -85,12 +87,13 @@ const SignUp = () => {
             <div class="">
               <input
                 type="text"
-                placeholder="Email"
+                placeholder="Date of Birth"
                 class=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-blue-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
-                value={email}
-                onChange={(e) => setemail(e.target.value)}
+                value={dob}
+                onChange={(e) => setdob(e.target.value)}
               />
             </div>
+
             <div class="">
               <input
                 type="text"
@@ -98,6 +101,15 @@ const SignUp = () => {
                 class=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-blue-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
                 value={phone}
                 onChange={(e) => setphone(e.target.value)}
+              />
+            </div>
+            <div class="">
+              <input
+                type="text"
+                placeholder="Email"
+                class=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-blue-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
+                value={email}
+                onChange={(e) => setemail(e.target.value)}
               />
             </div>
             <div class="">
