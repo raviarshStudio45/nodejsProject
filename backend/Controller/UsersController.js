@@ -29,7 +29,6 @@ const userLogin = async (req, res) => {
     if (isemail.password != user.password) {
       return res.status(400).json({ message: "Enter valid credential 2" });
     }
-
     const tokenData = {
       userId: isemail._id,
       email: isemail.email,
@@ -55,10 +54,17 @@ const userLogin = async (req, res) => {
 
 const userProfile = async (req, res) => {
   try {
-    const UserData = await Users.findById(req.user.userId);
+    const UserData = await Users.findById(req.user.userId).select("-password");
+
+    const spilitdob = UserData.dob.split(" ");
+    const dob = parseInt(spilitdob[2]);
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+
     const updatedUserData = {
       ...UserData.toObject(),
       fullName: `${UserData.firstName} ${UserData.lastName}`,
+      age: currentYear - dob,
     };
     return res.status(200).json(updatedUserData);
   } catch (error) {
