@@ -1,17 +1,22 @@
 const Posts = require("../Models/PostModel");
+const Users = require("../Models/UsersModel");
 
 const PostCreate = async (req, res) => {
+  const { caption, imageLink } = req.body;
+  const userId = req.user.userId;
+  const userData = await Users.findById(userId);
   try {
-    const { caption, imageLink } = req.body;
-    const userID = req.user.userId;
-
-    const newPost = new Posts({
-      userID,
-      caption,
-      imageLink,
-    });
-    const savedPost = await newPost.save();
-    res.status(201).json({ message: "Post saved successfully" });
+    if (caption && imageLink) {
+      const newPost = new Posts({
+        userId,
+        caption,
+        imageLink,
+      });
+      const savedPost = await newPost.save();
+      res.status(201).json({ message: "Post saved successfully" });
+    } else {
+      res.status(400).json({ message: "Field required" });
+    }
   } catch (error) {
     console.error("Post creation error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -20,7 +25,23 @@ const PostCreate = async (req, res) => {
 
 const AllPosts = async (req, res) => {
   try {
-    const posts = await Posts.find();
+    // const posts = await Posts.find().populate("userId").exec();
+    const posts = await Posts.find().populate({
+      path: "userId",
+      select: "firstName lastName",
+    });
+    const reversedPosts = posts.reverse();
+    res.status(200).json(reversedPosts);
+  } catch (error) {
+    console.error("Get posts error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const UserPosts = async (req, res) => {
+  const userId = req.user.userId;
+  try {
+    const posts = await Posts.find({ userId });
     res.status(200).json(posts);
   } catch (error) {
     console.error("Get posts error:", error);
@@ -29,25 +50,20 @@ const AllPosts = async (req, res) => {
 };
 
 const PostLike = async (req, res) => {
+  const { postId, userId } = req.params;
+  console.log(postId, userId);
   try {
-    const { userId } = req.user;
-    const { postId } = req.params;
-
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    const post = await Posts.findById(postId);
 
     if (post.likes.includes(userId)) {
-      return res.status(400).json({ message: "User already liked this post" });
+      post.likes.pull(userId);
+      await post.save();
+      return res.status(200).json({ message: "Disliked Success" });
     }
 
     post.likes.push(userId);
-
     const updatedPost = await post.save();
-
-    res.status(200).json(updatedPost);
+    res.status(200).json({ message: "Liked Success" });
   } catch (error) {
     console.error("Like post error:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -60,7 +76,7 @@ const PostComment = async (req, res) => {
     const { postId } = req.params;
     const { text } = req.body;
 
-    const post = await Post.findById(postId);
+    const post = await Posts.findById(postId);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -80,4 +96,4 @@ const PostComment = async (req, res) => {
   }
 };
 
-module.exports = { PostCreate, AllPosts, PostLike, PostComment };
+module.exports = { PostCreate, AllPosts, UserPosts, PostLike, PostComment };

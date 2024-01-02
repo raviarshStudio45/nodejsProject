@@ -1,44 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
-  const data = [
-    {
-      user: "Aman Deep",
-      img: "https://images.unsplash.com/photo-1572817519612-d8fadd929b00?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
-      caption:
-        "Quisque id nibh at risus finibus tincidunt. In malesuada mattis magna faucibus sodales. In pretium hendrerit lorem, non volutpat mauris rutrum sit amet. Quisque efficitur ligula non nulla hendrerit finibus. ",
-      time: "5min ago",
-      like: 44,
-      comments: 18,
-    },
-    {
-      user: "Harman",
-      img: "https://images.unsplash.com/photo-1703538715315-8e06d35b8f82?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      caption:
-        "Suspendisse odio nisl, vehicula sed metus lacinia, tincidunt pulvinar urna. Nam suscipit fermentum dolor in mattis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra neque tortor.",
-      time: "26 September",
-      like: 26,
-      comments: 16,
-    },
-    {
-      user: "Komal KK",
-      img: "https://images.unsplash.com/photo-1695664223145-58fb4b3f5e95?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      caption:
-        "Quisque id nibh at risus finibus tincidunt. In malesuada mattis magna faucibus sodales. In pretium hendrerit lorem, non volutpat mauris rutrum sit amet. Quisque efficitur ligula non nulla hendrerit finibus. ",
-      time: "2hour ago",
-      like: 29,
-      comments: 18,
-    },
-    {
-      user: "Harsh",
-      img: "https://images.unsplash.com/photo-1703538715315-8e06d35b8f82?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      caption:
-        "Suspendisse odio nisl, vehicula sed metus lacinia, tincidunt pulvinar urna. Nam suscipit fermentum dolor in mattis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra neque tortor.",
-      time: "26 September",
-      like: 31,
-      comments: 14,
-    },
-  ];
+  const [data, setdata] = useState();
+  const [loading, setloading] = useState(true);
+  const getData = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}post/all`
+    );
+    setdata(response.data);
+    setloading(false);
+  };
+  useEffect(() => {
+    if (loading) {
+      getData();
+    }
+  }, [loading]);
+
+  const handleLike = async (postId) => {
+    const userData = JSON.parse(localStorage.getItem("User"));
+    const token = localStorage.getItem("Token");
+    const response = await axios.put(
+      `${process.env.REACT_APP_BACKEND_URL}like/${postId}/${userData.UserId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("response.....", response);
+  };
   return (
     <div class="bg-gray-100">
       <div class="py-5 mx-auto w-[60%]">
@@ -69,12 +61,12 @@ const Home = () => {
 
         <div class="mt-3 flex flex-col">
           {data?.map((item, i) => (
-            <div class="bg-white mt-3">
+            <div class="bg-white mt-3" key={i}>
               <div className="mx-5 my-4">
                 <div className="flex">
                   <i class="fa-solid fa-user text-2xl text-gray-600"></i>
                   <p className="ms-2 text-xl text-gray-700 font-semibold">
-                    {item.user}
+                    {item.userId.firstName} {item.userId.lastName}
                   </p>
                 </div>
                 <p class="text-base text-gray-700 font-semibold">
@@ -82,23 +74,26 @@ const Home = () => {
                 </p>
               </div>
               <img
-                class="border shadow-lg h-[500px] w-full"
-                src={item.img}
+                class="border shadow-lg h-[440px] w-full"
+                src={item.imageLink}
                 alt="img"
               />
               <div class="bg-white p-1 border  flex flex-row flex-wrap">
-                <div class="w-1/3 hover:bg-gray-200 text-center text-base text-gray-700 font-semibold">
-                  {item.like} Like
+                <div
+                  class="w-1/3 hover:bg-gray-200 text-center text-base text-gray-700 font-semibold"
+                  onClick={() => handleLike(item._id)}
+                >
+                  {item.likes.length} Like
                 </div>
                 <div class="w-1/3 hover:bg-gray-200 border-l-4 text-center text-base text-gray-700 font-semibold">
-                  {item.comments} Comment
+                  {item.comments.length} Comment
                 </div>
                 <div class="w-1/3 hover:bg-gray-200 border-l-4 border-r- text-center text-base text-gray-700 font-semibold">
                   Share
                 </div>
               </div>
               <div className="shadow p-4  text-base text-gray-700 font-medium">
-                Posted: {item.time}
+                Posted: {item.datePosted.split("T")[0]}
               </div>
 
               {/* <div class="bg-white border-4 bg-gray-300 border-white rounded-b-lg shadow p-5 text-xl text-gray-700 content-center font-semibold flex flex-row flex-wrap">
