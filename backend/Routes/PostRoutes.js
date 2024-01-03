@@ -12,7 +12,7 @@ const verifyToken = require("../Middleware");
 router.post("/create", verifyToken, PostCreate);
 router.get("/user-posts", verifyToken, UserPosts);
 router.get("/all", AllPosts);
-router.put("/like/:postId/:userId", verifyToken, PostLike);
-router.put("/comment/:postId/:userId", verifyToken, PostComment);
+router.post("/like/:postId/", verifyToken, PostLike);
+router.post("/comment/:postId/", verifyToken, PostComment);
 
 module.exports = router;

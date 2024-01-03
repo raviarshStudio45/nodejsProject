@@ -50,8 +50,8 @@ const UserPosts = async (req, res) => {
 };
 
 const PostLike = async (req, res) => {
-  const { postId, userId } = req.params;
-  console.log(postId, userId);
+  const { postId } = req.params;
+  const { userId } = req.user;
   try {
     const post = await Posts.findById(postId);
 
@@ -60,9 +60,9 @@ const PostLike = async (req, res) => {
       await post.save();
       return res.status(200).json({ message: "Disliked Success" });
     }
-
     post.likes.push(userId);
     const updatedPost = await post.save();
+
     res.status(200).json({ message: "Liked Success" });
   } catch (error) {
     console.error("Like post error:", error);
@@ -71,25 +71,23 @@ const PostLike = async (req, res) => {
 };
 
 const PostComment = async (req, res) => {
+  const { postId } = req.params;
+  const { userId } = req.user;
+  const { text } = req.body;
   try {
-    const { userId } = req.user;
-    const { postId } = req.params;
-    const { text } = req.body;
-
     const post = await Posts.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
+    // if (post.comments.includes(userId)) {
+    //   post.comments.pull(userId);
+    //   await post.save();
+    //   return res.status(200).json({ message: "Comment remove" });
+    // }
     post.comments.push({
       user: userId,
       text,
     });
-
     const updatedPost = await post.save();
 
-    res.status(200).json(updatedPost);
+    res.status(200).json("Comment added");
   } catch (error) {
     console.error("Comment on post error:", error);
     res.status(500).json({ message: "Internal Server Error" });
