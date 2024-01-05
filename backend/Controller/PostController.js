@@ -26,10 +26,20 @@ const PostCreate = async (req, res) => {
 const AllPosts = async (req, res) => {
   try {
     // const posts = await Posts.find().populate("userId").exec();
-    const posts = await Posts.find().populate({
-      path: "userId",
-      select: "firstName lastName",
-    });
+    const posts = await Posts.find()
+      .populate({
+        path: "userId",
+        select: "firstName lastName",
+      })
+      .populate({
+        path: "likes",
+        select: "firstName lastName",
+      })
+      .populate({
+        path: "comments.user",
+        select: "firstName lastName",
+      })
+      .exec();
     const reversedPosts = posts.reverse();
     res.status(200).json(reversedPosts);
   } catch (error) {

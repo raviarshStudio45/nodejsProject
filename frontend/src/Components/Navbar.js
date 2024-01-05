@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <>
-      <div class="shadow py-3 flex justify-between px-5 items-center navbarFixed">
+      <div class="shadow py-2 flex justify-between px-5 items-center navbarFixed">
         <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,11 +37,11 @@ const Navbar = () => {
           <div class="relative">
             <input
               type="search"
-              class="w-[270px] pl-8 py-2 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:outline-none focus:border-blue-500 transition-colors"
+              class="w-[270px] pl-8 py-[3px] border border-gray-200 rounded-lg hover:border-gray-300 focus:outline-none  transition-colors"
               placeholder="Find Friend"
             />
 
-            <i class="fa-solid fa-magnifying-glass  leading-0 absolute  text-xl top-2 left-2 text-gray-400 focus:outline-none  transition-colors"></i>
+            <i class="fa-solid fa-magnifying-glass leading-0 absolute  text top-2 left-2 text-gray-400 focus:outline-none  transition-colors"></i>
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ const Posts = () => {
   }, []);
   return (
     <div class="bg-gray-100">
-      <div class="w-full text-white bg-main-color bg-gray-100 p-4">
+      <div class="w-full text-white bg-main-color bg-gray-100 p-2 rounded">
         <div class="bg-white p-3 w-full">
           <h2 className="font-semibold text-gray-900 text-xl leading-8">
             Media

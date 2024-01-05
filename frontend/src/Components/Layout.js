@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 const Layout = () => {
+  const { pathname } = useLocation();
   return (
     <>
       <div>
@@ -12,7 +13,7 @@ const Layout = () => {
       <div className="outletDiv">
         <Outlet />
       </div>
-      <Footer />
+      {pathname != "/home" && <Footer />}
     </>
   );
 };
